@@ -100,7 +100,7 @@ namespace MatrixCalculator
                 return data[0, 0] * data[1, 1] - data[0, 1] * data[1, 0];
 
             double det = 0;
-            for (int j = 0, j < size; j++)
+            for (int j = 0; j < size; j++)
             {
                 det += data[0, j] * Cofactor(0, j);
             }
@@ -166,6 +166,30 @@ namespace MatrixCalculator
             return !(a == b);
         }
 
+
+        public static SquareMatrix operator +(SquareMatrix a, SquareMatrix b)
+        {
+            if (a.size != b.size)
+                throw new MatrixDimensionException("Матрицы должны быть одинакового размера");
+
+            SquareMatrix result = new SquareMatrix(a.size);
+            for (int i = 0; i < a.size;i++)
+                for (int j = 0; j < a.size;j++)
+                    result.data[i,j] = a.data[i,j] + b.data[i,j];
+            return result;
+        }
+        public static SquareMatrix operator *(SquareMatrix a, SquareMatrix b)
+        {
+            if (a.size != b.size)
+                throw new MatrixDimensionException("Матрицы должны быть одинакового размера");
+            SquareMatrix result = new SquareMatrix(a.size);
+            for (int i = 0; i < a.size; i++)
+                for (int j = 0; j < a.size; j++)
+                    result.data[i, j] += a.data[i, j] * b.data[i, j];
+            return result;
+        }
+
+
     }
     class Program
     {
@@ -180,7 +204,28 @@ namespace MatrixCalculator
                 SquareMatrix matrix2 = new SquareMatrix(3, 1, 5);
                 Console.WriteLine(matrix1);
                 Console.WriteLine(matrix2);
-            }
+
+                Console.WriteLine("Сложение матриц");
+                SquareMatrix sum = matrix1 + matrix2;
+                Console.WriteLine(sum);
+
+                Console.WriteLine("Умножение матриц");
+                SquareMatrix mult = matrix1 * matrix2;
+                Console.WriteLine(mult);
+
+                Console.WriteLine("");
+                Console.WriteLine($"Детерминант m1: {matrix1.Determinant():F2}");
+
+                Console.WriteLine("Сравнение матриц");
+                Console.WriteLine($"matrix1 > matrix2: {matrix1 > matrix2}");
+                Console.WriteLine($"matrix1 == matrix2: {matrix1 == matrix2}");
+
+
+
+
+
+
+    }
             catch 
             {
                 Console.WriteLine("Ошибка");
