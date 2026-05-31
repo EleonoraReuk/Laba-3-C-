@@ -190,6 +190,26 @@ namespace MatrixCalculator
         }
 
 
+        public SquareMatrix Inverse()
+        {
+            double det = Determinant();
+            if (Math.Abs(det) < 1e-10)
+                throw new SingularMatrixException("Обратной матрицы не существует");
+
+            SquareMatrix inverse = new SquareMatrix(size);
+
+            for (int i = 0; i < size; i++) 
+            { 
+                for (int j = 0; j < size; j++)
+                {
+                    double cofactor = Cofactor(i, j);
+                    inverse[j, i] = cofactor / det;
+                }
+            }
+            return inverse;
+        }
+
+
     }
     class Program
     {
@@ -218,9 +238,14 @@ namespace MatrixCalculator
 
                 Console.WriteLine("Сравнение матриц");
                 Console.WriteLine($"matrix1 > matrix2: {matrix1 > matrix2}");
-                Console.WriteLine($"matrix1 == matrix2: {matrix1 == matrix2}");
+                Console.WriteLine($"matrix1 == matrix2: {matrix1 == matrix2}\n");
 
-
+                Console.WriteLine("Обратная матрица");
+                SquareMatrix matrix3 = new SquareMatrix(3, 1, 5);
+                Console.WriteLine("Исходная матрица: ");
+                Console.WriteLine(matrix3);
+                SquareMatrix inver = matrix3.Inverse();
+                Console.WriteLine(inver);
 
 
 
