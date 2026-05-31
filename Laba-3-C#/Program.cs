@@ -131,6 +131,41 @@ namespace MatrixCalculator
             }
             return subMatrix.Determinant();
         }
+
+
+        public static bool operator >(SquareMatrix a, SquareMatrix b)
+        {
+            return a.Determinant() > b.Determinant();
+        }
+        public static bool operator <(SquareMatrix a, SquareMatrix b)
+        {
+            return a.Determinant() < b.Determinant();
+        }
+        public static bool operator >=(SquareMatrix a, SquareMatrix b)
+        {
+            return a.Determinant() >= b.Determinant();
+        }
+        public static bool operator <=(SquareMatrix a, SquareMatrix b)
+        {
+            return a.Determinant() <= b.Determinant();
+        }
+        public static bool operator ==(SquareMatrix a, SquareMatrix b)
+        {
+            if (ReferenceEquals(a, null) && ReferenceEquals(b, null)) return true;
+            if (ReferenceEquals(a, null) || ReferenceEquals(b, null)) return false;
+
+            if (a.size != b.size) return false;
+
+            for (int i = 0; i < a.size; i++)
+                for (int j = 0; j < a.size; j++)
+                    if (Math.Abs(a.data[i, j] - b.data[i, j]) > 1e-10) return false;
+            return true;
+        }
+        public static bool operator !=(SquareMatrix a, SquareMatrix b)
+        {
+            return !(a == b);
+        }
+
     }
     class Program
     {
