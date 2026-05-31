@@ -210,6 +210,27 @@ namespace MatrixCalculator
         }
 
 
+        public static bool operator true(SquareMatrix matrix)
+        {
+            return Math.Abs(matrix.Determinant()) > 1e-10;
+        }
+
+        public static bool operator false(SquareMatrix matrix)
+        {
+            return Math.Abs(matrix.Determinant()) < 1e-10;
+        }
+
+        public static explicit operator double[,](SquareMatrix matrix)
+        {
+            return (double[,])matrix.data.Clone();
+        }
+
+        public static implicit operator SquareMatrix(double[,] matrix)
+        {
+            return new SquareMatrix(matrix);
+        }
+
+
     }
     class Program
     {
