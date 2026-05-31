@@ -88,6 +88,49 @@ namespace MatrixCalculator
             return result;
         }
 
+
+
+
+        public double Determinant()
+        {
+            if (size == 1)
+                return data[0, 0];
+
+            if (size == 2)
+                return data[0, 0] * data[1, 1] - data[0, 1] * data[1, 0];
+
+            double det = 0;
+            for (int j = 0, j < size; j++)
+            {
+                det += data[0, j] * Cofactor(0, j);
+            }
+            return det;
+        }
+
+        private double Cofactor(int row, int col)
+        {
+            return Math.Pow(-1, row + col) * Minor(row, col);
+        }
+
+        private double Minor(int row, int col)
+        {
+            SquareMatrix subMatrix = new SquareMatrix(size - 1);
+            int subI = 0, subJ = 0;
+
+            for (int i = 0; i < size; i++)
+            {
+                if (i == row) continue;
+                subJ = 0;
+                for (int j = 0; j < size; j++)
+                {
+                    if (j == col) continue;
+                    subMatrix[subI, subJ] = data[i, j];
+                    subJ++;
+                }
+                subJ++;
+            }
+            return subMatrix.Determinant();
+        }
     }
     class Program
     {
