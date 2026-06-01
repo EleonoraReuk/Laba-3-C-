@@ -126,7 +126,6 @@ namespace MatrixCalculator
                     subMatrix[subI, subJ] = data[i, j];
                     subJ++;
                 }
-                subJ++;
             }
             return subMatrix.Determinant();
         }
@@ -185,7 +184,8 @@ namespace MatrixCalculator
             SquareMatrix result = new SquareMatrix(a.size);
             for (int i = 0; i < a.size; i++)
                 for (int j = 0; j < a.size; j++)
-                    result.data[i, j] += a.data[i, j] * b.data[i, j];
+                    for (int k = 0; k < a.size; k++)
+                        result.data[i, j] += a.data[i, k] * b.data[k, j];
             return result;
         }
 
@@ -258,11 +258,6 @@ namespace MatrixCalculator
         public object Clone()
         {
             return new SquareMatrix(this);
-        }
-
-        int IComparable<SquareMatrix>.CompareTo(SquareMatrix? other)
-        {
-            throw new NotImplementedException();
         }
 
 
