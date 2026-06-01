@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MatrixCalculator
 {
@@ -18,10 +19,8 @@ namespace MatrixCalculator
         public SingularMatrixException(string message) : base(message) { }
     }
 
-
-    public class SquareMatrix
-    {
-        private double[,] data;
+    public class SquareMatrix : ICloneable, IComparable<SquareMatrix>
+    {   private double[,] data;
         private int size;
 
         public int Size => size;
@@ -30,8 +29,7 @@ namespace MatrixCalculator
         {
             get { return data[i, j]; }
             set { data[i, j] = value; }
-        }
-
+        }            
 
         public SquareMatrix(int size)
         {
@@ -77,9 +75,9 @@ namespace MatrixCalculator
         public override string ToString()
         {
             string result = $"Матрица {size}x{size}:\n";
-            for(int i = 0; i < size; i++)
+            for (int i = 0; i < size; i++)
             {
-                for (int j = 0;j < size; j++)
+                for (int j = 0; j < size; j++)
                 {
                     result += $"{data[i, j],8:F2} ";
                 }
@@ -87,7 +85,6 @@ namespace MatrixCalculator
             }
             return result;
         }
-
 
 
 
@@ -167,15 +164,16 @@ namespace MatrixCalculator
         }
 
 
+
         public static SquareMatrix operator +(SquareMatrix a, SquareMatrix b)
         {
             if (a.size != b.size)
                 throw new MatrixDimensionException("Матрицы должны быть одинакового размера");
 
             SquareMatrix result = new SquareMatrix(a.size);
-            for (int i = 0; i < a.size;i++)
-                for (int j = 0; j < a.size;j++)
-                    result.data[i,j] = a.data[i,j] + b.data[i,j];
+            for (int i = 0; i < a.size; i++)
+                for (int j = 0; j < a.size; j++)
+                    result.data[i, j] = a.data[i, j] + b.data[i, j];
             return result;
         }
         public static SquareMatrix operator *(SquareMatrix a, SquareMatrix b)
@@ -190,6 +188,7 @@ namespace MatrixCalculator
         }
 
 
+
         public SquareMatrix Inverse()
         {
             double det = Determinant();
@@ -198,8 +197,8 @@ namespace MatrixCalculator
 
             SquareMatrix inverse = new SquareMatrix(size);
 
-            for (int i = 0; i < size; i++) 
-            { 
+            for (int i = 0; i < size; i++)
+            {
                 for (int j = 0; j < size; j++)
                 {
                     double cofactor = Cofactor(i, j);
@@ -231,53 +230,84 @@ namespace MatrixCalculator
         }
 
 
-    }
-    class Program
-    {
-        static void Main(string[] args)
+
+        public int CompareTo(SquareMatrix other)
         {
-            Console.WriteLine("Матричный калькулятор");
+            if (other == null) return 1;
+            return Determinant().CompareTo(other.Determinant());
+        }
 
-            try
+        public override bool Equals(object obj)
+        {
+            if (obj is SquareMatrix other)
+                return this == other;
+            return false;
+        }
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash = hash * 23 + size.GetHashCode();
+            for (int i = 0; i < size; i++)
+                for (int j = 0; j < size; j++)
+                    hash = hash * 23 + data[i, j].GetHashCode();
+            return hash;
+        }
+
+        public object Clone()
+        {
+            return new SquareMatrix(this);
+        }
+
+        int IComparable<SquareMatrix>.CompareTo(SquareMatrix? other)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        class Program
+        {
+            static void Main(string[] args)
             {
-                Console.WriteLine("Создание матриц");
-                SquareMatrix matrix1 = new SquareMatrix(3, 1, 5);
-                SquareMatrix matrix2 = new SquareMatrix(3, 1, 5);
-                Console.WriteLine(matrix1);
-                Console.WriteLine(matrix2);
+                Console.WriteLine("Матричный калькулятор");
 
-                Console.WriteLine("Сложение матриц");
-                SquareMatrix sum = matrix1 + matrix2;
-                Console.WriteLine(sum);
+                try
+                {
+                    Console.WriteLine("Создание матриц");
+                    SquareMatrix matrix1 = new SquareMatrix(3, 1, 5);
+                    SquareMatrix matrix2 = new SquareMatrix(3, 1, 5);
+                    Console.WriteLine(matrix1);
+                    Console.WriteLine(matrix2);
 
-                Console.WriteLine("Умножение матриц");
-                SquareMatrix mult = matrix1 * matrix2;
-                Console.WriteLine(mult);
+                    Console.WriteLine("Сложение матриц");
+                    SquareMatrix sum = matrix1 + matrix2;
+                    Console.WriteLine(sum);
 
-                Console.WriteLine("");
-                Console.WriteLine($"Детерминант m1: {matrix1.Determinant():F2}");
+                    Console.WriteLine("Умножение матриц");
+                    SquareMatrix mult = matrix1 * matrix2;
+                    Console.WriteLine(mult);
 
-                Console.WriteLine("Сравнение матриц");
-                Console.WriteLine($"matrix1 > matrix2: {matrix1 > matrix2}");
-                Console.WriteLine($"matrix1 == matrix2: {matrix1 == matrix2}\n");
+                    Console.WriteLine("");
+                    Console.WriteLine($"Детерминант m1: {matrix1.Determinant():F2}");
 
-                Console.WriteLine("Обратная матрица");
-                SquareMatrix matrix3 = new SquareMatrix(3, 1, 5);
-                Console.WriteLine("Исходная матрица: ");
-                Console.WriteLine(matrix3);
-                SquareMatrix inver = matrix3.Inverse();
-                Console.WriteLine(inver);
+                    Console.WriteLine("Сравнение матриц");
+                    Console.WriteLine($"matrix1 > matrix2: {matrix1 > matrix2}");
+                    Console.WriteLine($"matrix1 == matrix2: {matrix1 == matrix2}\n");
 
+                    Console.WriteLine("Обратная матрица");
+                    SquareMatrix matrix3 = new SquareMatrix(3, 1, 5);
+                    Console.WriteLine("Исходная матрица: ");
+                    Console.WriteLine(matrix3);
+                    SquareMatrix inver = matrix3.Inverse();
+                    Console.WriteLine(inver);
 
+                }
+                catch
+                {
+                    Console.WriteLine("Ошибка");
+                }
 
-
-    }
-            catch 
-            {
-                Console.WriteLine("Ошибка");
+                Console.ReadKey();
             }
-
-            Console.ReadKey();
         }
     }
 }
