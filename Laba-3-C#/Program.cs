@@ -19,6 +19,8 @@ namespace MatrixCalculator
         public SingularMatrixException(string message) : base(message) { }
     }
 
+
+
     public class SquareMatrix : ICloneable, IComparable<SquareMatrix>
     {   private double[,] data;
         private int size;
@@ -268,44 +270,92 @@ namespace MatrixCalculator
         {
             static void Main(string[] args)
             {
-                Console.WriteLine("Матричный калькулятор");
+                Console.WriteLine("~~~~~МАТРИЧНЫЙ КАЛЬКУЛЯТОР~~~~~\n");
 
                 try
                 {
-                    Console.WriteLine("Создание матриц");
+                    Console.WriteLine("=====Создание матриц=====");
                     SquareMatrix matrix1 = new SquareMatrix(3, 1, 5);
                     SquareMatrix matrix2 = new SquareMatrix(3, 1, 5);
+                    Console.WriteLine("\tМатрица 1");
                     Console.WriteLine(matrix1);
+                    Console.WriteLine("\tМатрица 2");
                     Console.WriteLine(matrix2);
 
-                    Console.WriteLine("Сложение матриц");
+
+                    Console.WriteLine("=====Сложение матриц=====");
                     SquareMatrix sum = matrix1 + matrix2;
                     Console.WriteLine(sum);
 
-                    Console.WriteLine("Умножение матриц");
+
+                    Console.WriteLine("=====Умножение матриц=====");
                     SquareMatrix mult = matrix1 * matrix2;
                     Console.WriteLine(mult);
 
-                    Console.WriteLine("");
-                    Console.WriteLine($"Детерминант m1: {matrix1.Determinant():F2}");
 
-                    Console.WriteLine("Сравнение матриц");
+                    Console.WriteLine("=====Детерминант матриц=====");
+                    Console.WriteLine($"Детерминант матрицы 1: {matrix1.Determinant():F2}");
+                    Console.WriteLine($"Детерминант матрицы 2: {matrix2.Determinant():F2}\n");
+
+
+                    Console.WriteLine("=====Сравнение матриц=====");
                     Console.WriteLine($"matrix1 > matrix2: {matrix1 > matrix2}");
-                    Console.WriteLine($"matrix1 == matrix2: {matrix1 == matrix2}\n");
+                    Console.WriteLine($"matrix1 < matrix2: {matrix1 < matrix2}");
+                    Console.WriteLine($"matrix1 >= matrix2: {matrix1 >= matrix2}");
+                    Console.WriteLine($"matrix1 <= matrix2: {matrix1 <= matrix2}");
+                    Console.WriteLine($"matrix1 == matrix2: {matrix1 == matrix2}");
+                    Console.WriteLine($"matrix1 != matrix2: {matrix1 != matrix2}\n");
 
-                    Console.WriteLine("Обратная матрица");
-                    SquareMatrix matrix3 = new SquareMatrix(3, 1, 5);
-                    Console.WriteLine("Исходная матрица: ");
-                    Console.WriteLine(matrix3);
-                    SquareMatrix inver = matrix3.Inverse();
-                    Console.WriteLine(inver);
 
+                    Console.WriteLine("=====Обратная матрица=====");
+                    try
+                    {
+                        SquareMatrix nonSingular = new SquareMatrix(3, 2, 4);
+                        Console.WriteLine("Исходная матрица:");
+                        Console.WriteLine(nonSingular);
+                        Console.WriteLine($"Детерминант: {nonSingular.Determinant():F2}");
+
+                        SquareMatrix inverse = nonSingular.Inverse();
+                        Console.WriteLine("Обратная матрица:");
+                        Console.WriteLine(inverse);
+                    }
+                    catch (SingularMatrixException ex)
+                    {
+                        Console.WriteLine($"Ошибка: {ex.Message}\n");
+                    }
+
+
+                    Console.WriteLine("=====Приведение типов=====");
+                    double[,] array = (double[,])matrix1;
+                    Console.WriteLine($"Приведение матрицы: [{array.GetLength(0)}, {array.GetLength(1)}]\n");
+
+
+                    Console.WriteLine("=====\"Прототип\" глубокое копирование=====");
+                    SquareMatrix clone = (SquareMatrix)matrix1.Clone();
+                    Console.WriteLine("Оригинал:");
+                    Console.WriteLine(matrix1);
+                    Console.WriteLine("Клон:");
+                    Console.WriteLine(clone);
+
+                    
+                    Console.WriteLine($"\nCompareTo: {matrix1.CompareTo(matrix2)}\n");
+
+                    Console.WriteLine($"HashCode матрицы 1: {matrix1.GetHashCode()}");
+                    Console.WriteLine($"HashCode матрицы 2: {matrix2.GetHashCode()}\n");
+
+                    Console.WriteLine($"Equals: {matrix1.Equals(matrix2)} \n");
                 }
-                catch
+
+                catch (MatrixException ex)
                 {
-                    Console.WriteLine("Ошибка");
+                    Console.WriteLine($"Ошибка матрицы: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка: {ex.Message}");
                 }
 
+                Console.WriteLine("Нажмите любую клавишу для выхода...");
                 Console.ReadKey();
             }
         }
